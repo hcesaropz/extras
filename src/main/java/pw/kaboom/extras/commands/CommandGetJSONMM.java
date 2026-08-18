@@ -14,6 +14,8 @@ import java.util.List;
 import static io.papermc.paper.command.brigadier.Commands.argument;
 
 public final class CommandGetJSONMM implements BrigadierCommand {
+    private static final JSONComponentSerializer SERIALIZER = JSONComponentSerializer.json();
+
     @Override
     public String getLabel() {
         return "getjsonmm";
@@ -40,8 +42,7 @@ public final class CommandGetJSONMM implements BrigadierCommand {
                             final Component createdComponent = MiniMessage.miniMessage()
                                     .deserialize(StringArgumentType.getString(ctx, "message"));
 
-                            final String asJson = GsonComponentSerializer.gson()
-                                    .serialize(createdComponent);
+                            final String asJson = SERIALIZER.serialize(createdComponent);
                             final Component feedback = Component.empty()
                                     .append(Component.text("Your component as JSON (click" +
                                             " to copy): "))
