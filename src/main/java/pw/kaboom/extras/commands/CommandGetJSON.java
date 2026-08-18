@@ -38,13 +38,12 @@ public final class CommandGetJSON implements BrigadierCommand {
                 .requires(src -> src.getSender().hasPermission("extras.getjson"))
                 .then(argument("message", greedyString())
                         .executes(ctx -> {
-                            Component createdComponent = LegacyComponentSerializer
+                            final Component createdComponent = LegacyComponentSerializer
                                     .legacyAmpersand()
                                     .deserialize(StringArgumentType.getString(ctx, "message"));
 
-                            String asJson = SERIALIZER.serialize(createdComponent);
-
-                            Component feedback = Component.empty()
+                            final String asJson = SERIALIZER.serialize(createdComponent);
+                            final Component feedback = Component.empty()
                                     .append(Component.text("Your component as JSON (click to " +
                                         "copy): "))
                                     .append(Component.text(asJson, NamedTextColor.GREEN))

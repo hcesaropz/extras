@@ -32,12 +32,12 @@ public final class CommandJumpscare implements BrigadierCommand {
                 )
                 .then(argument("players", players())
                         .executes(ctx -> {
-                            PlayerSelectorArgumentResolver selector = ctx.getArgument(
+                            final PlayerSelectorArgumentResolver selector = ctx.getArgument(
                                     "players",
                                     PlayerSelectorArgumentResolver.class
                             );
-                            List<Player> targets = selector.resolve(ctx.getSource());
-                            for (Player target : targets) {
+                            final List<Player> targets = selector.resolve(ctx.getSource());
+                            for (final Player target : targets) {
                                 createJumpscare(target);
                             }
                             if (targets.size() == 1) {

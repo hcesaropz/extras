@@ -39,9 +39,9 @@ public final class CommandSpidey implements BrigadierCommand {
                         throw ERR_NOT_PLAYER.create();
                     }
 
-                    World world = player.getWorld();
-                    Vector start = player.getEyeLocation().toVector();
-                    Vector direction = player.getEyeLocation().getDirection();
+                    final World world = player.getWorld();
+                    final Vector start = player.getEyeLocation().toVector();
+                    final Vector direction = player.getEyeLocation().getDirection();
                     final int yOffset = 0;
                     final int distance = 50;
 
@@ -54,7 +54,7 @@ public final class CommandSpidey implements BrigadierCommand {
                     );
 
                     while (blockIterator.hasNext()) {
-                        Block block = blockIterator.next();
+                        final Block block = blockIterator.next();
 
                         if (block.getType() != Material.COBWEB && !block.getType().isAir()) break;
                         block.setType(Material.COBWEB);

@@ -54,12 +54,12 @@ public final class CommandPing implements BrigadierCommand {
                 })
                 .then(argument("player", player())
                         .executes(ctx -> {
-                            PlayerSelectorArgumentResolver resolver = ctx.getArgument(
+                            final PlayerSelectorArgumentResolver resolver = ctx.getArgument(
                                     "player",
                                     PlayerSelectorArgumentResolver.class
                             );
-                            Player player = resolver.resolve(ctx.getSource()).getFirst();
-                            int ping = player.getPing();
+                            final Player player = resolver.resolve(ctx.getSource()).getFirst();
+                            final int ping = player.getPing();
                             ctx.getSource().getSender().sendMessage(
                                     Component.text(player.getName())
                                             .append(Component.text("'s ping is "))

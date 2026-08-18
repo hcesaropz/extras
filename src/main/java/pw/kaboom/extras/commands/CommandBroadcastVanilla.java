@@ -15,8 +15,8 @@ import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
 import static io.papermc.paper.command.brigadier.Commands.argument;
 
 public final class CommandBroadcastVanilla implements BrigadierCommand {
-    private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER
-            = LegacyComponentSerializer.legacyAmpersand();
+    private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER =
+            LegacyComponentSerializer.legacyAmpersand();
 
     @Override
     public String getLabel() {

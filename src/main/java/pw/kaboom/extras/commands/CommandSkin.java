@@ -36,13 +36,13 @@ public final class CommandSkin implements BrigadierCommand {
     public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
         builder.requires(src -> src.getSender().hasPermission("extras.skin"));
 
-        for (String alias : List.of("off", "remove", "disable")) {
+        for (final String alias : List.of("off", "remove", "disable")) {
             builder.then(literal(alias).executes(ctx -> {
                 SkinManager.removeSkin(player(ctx), true);
                 return 1;
             }));
         }
-        for (String alias : List.of("auto", "default", "reset")) {
+        for (final String alias : List.of("auto", "default", "reset")) {
             builder.then(literal(alias).executes(ctx -> {
                 Player player = player(ctx);
                 SkinManager.requestSkin(player, player.getName(), true);

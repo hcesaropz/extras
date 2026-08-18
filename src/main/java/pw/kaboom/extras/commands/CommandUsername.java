@@ -52,10 +52,10 @@ public final class CommandUsername implements BrigadierCommand {
                         && src.getSender() instanceof Player
         );
 
-        for (String alias : List.of("auto", "default", "reset")) {
+        for (final String alias : List.of("auto", "default", "reset")) {
             builder.then(literal(alias).executes(ctx -> {
-                Player player = player(ctx);
-                String original = originalNames.get(player);
+                final Player player = player(ctx);
+                final String original = originalNames.get(player);
 
                 if (original == null || original.equals(player.getName())) {
                     player.sendMessage(
@@ -71,16 +71,16 @@ public final class CommandUsername implements BrigadierCommand {
 
         builder.then(argument("username", greedyString())
                 .executes(ctx -> {
-                    Player player = player(ctx);
+                    final Player player = player(ctx);
 
-                    String nameColor =
+                    final String nameColor =
                             Utility.translateLegacyColors(
                                     StringArgumentType.getString(
                                             ctx,
                                             "username"
                                     )
                             );
-                    String name = nameColor.substring(0, Math.min(16,
+                    final String name = nameColor.substring(0, Math.min(16,
                             nameColor.length()));
 
                     if (name.equals(player.getName())) {

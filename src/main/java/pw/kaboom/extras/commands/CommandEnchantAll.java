@@ -52,7 +52,7 @@ public final class CommandEnchantAll implements BrigadierCommand {
 
                     final Registry<Enchantment> registry = RegistryAccess.registryAccess()
                             .getRegistry(RegistryKey.ENCHANTMENT);
-                    for (Enchantment enchantment : registry) {
+                    for (final Enchantment enchantment : registry) {
                         item.addUnsafeEnchantment(enchantment, Short.MAX_VALUE);
                     }
                     player.sendMessage(Component.text("I killed Martin."));

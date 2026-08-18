@@ -54,7 +54,7 @@ public final class Main extends JavaPlugin {
         /* Commands */
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> {
             final Commands registrar = event.registrar();
-            List<BrigadierCommand> commands = List.of(
+            final List<BrigadierCommand> commands = List.of(
                     new CommandBroadcastMiniMessage(),
                     new CommandBroadcastRainbow(),
                     new CommandBroadcastVanilla(),
@@ -75,9 +75,9 @@ public final class Main extends JavaPlugin {
                     new CommandSpidey(),
                     new CommandUsername()
             );
-            for (BrigadierCommand command : commands) {
-                LiteralArgumentBuilder<CommandSourceStack> builder
-                        = Commands.literal(command.getLabel());
+            for (final BrigadierCommand command : commands) {
+                final LiteralArgumentBuilder<CommandSourceStack> builder =
+                        Commands.literal(command.getLabel());
                 command.build(builder);
                 registrar.register(
                         builder.build(),command.getDescription(),command.getAliases()

@@ -37,14 +37,12 @@ public final class CommandGetJSONMM implements BrigadierCommand {
                 )
                 .then(argument("message", StringArgumentType.greedyString())
                         .executes(ctx -> {
-                            Component createdComponent = MiniMessage.miniMessage().deserialize(
-                                    StringArgumentType.getString(ctx, "message")
-                            );
+                            final Component createdComponent = MiniMessage.miniMessage()
+                                    .deserialize(StringArgumentType.getString(ctx, "message"));
 
-                            String asJson = GsonComponentSerializer.gson()
+                            final String asJson = GsonComponentSerializer.gson()
                                     .serialize(createdComponent);
-
-                            Component feedback = Component.empty()
+                            final Component feedback = Component.empty()
                                     .append(Component.text("Your component as JSON (click" +
                                             " to copy): "))
                                     .append(Component.text(asJson, NamedTextColor.GREEN))

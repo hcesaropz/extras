@@ -35,13 +35,13 @@ public final class CommandDestroyEntities implements BrigadierCommand {
                     int entityCount = 0;
                     int worldCount = 0;
 
-                    for (World world : Bukkit.getWorlds()) {
-                        for (Entity entity : world.getEntities()) {
+                    for (final World world : Bukkit.getWorlds()) {
+                        for (final Entity entity : world.getEntities()) {
                             if (!EntityType.PLAYER.equals(entity.getType())) {
                                 try {
                                     entity.remove();
                                     entityCount++;
-                                } catch (Exception _) {
+                                } catch (final Exception _) {
                                     // Broken entity
                                 }
                             }
