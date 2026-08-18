@@ -46,7 +46,7 @@ public final class CommandGetJSON implements BrigadierCommand {
 
                             Component feedback = Component.empty()
                                     .append(Component.text("Your component as JSON (click to " +
-											"copy): "))
+                                        "copy): "))
                                     .append(Component.text(asJson, NamedTextColor.GREEN))
                                     .clickEvent(ClickEvent.copyToClipboard(asJson));
 
