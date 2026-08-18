@@ -39,18 +39,20 @@ public final class CommandPumpkin implements BrigadierCommand {
                             List<Player> targets = selector.resolve(ctx.getSource());
                             for (Player target : targets) {
                                 placePumpkin(target);
-                                if (targets.size() == 1) {
-                                    ctx.getSource().getSender().sendMessage(
-                                            Component.text("\"")
-                                                    .append(Component.text(target.getName()))
-                                                    .append(Component.text("\" is now a pumpkin"))
-                                    );
-                                } else {
-                                    ctx.getSource().getSender().sendMessage(
-                                            Component.text(targets.size()
-                                                    + " players are now pumpkins")
-                                    );
-                                }
+                            }
+                            if (targets.size() == 1) {
+                                ctx.getSource().getSender().sendMessage(
+                                        Component.text("\"")
+                                                .append(Component.text(
+                                                        targets.getFirst().getName())
+                                                )
+                                                .append(Component.text("\" is now a pumpkin"))
+                                );
+                            } else {
+                                ctx.getSource().getSender().sendMessage(
+                                        Component.text(targets.size()
+                                                + " players are now pumpkins")
+                                );
                             }
                             return 1;
                         })

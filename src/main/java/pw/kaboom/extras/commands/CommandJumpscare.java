@@ -39,20 +39,22 @@ public final class CommandJumpscare implements BrigadierCommand {
                             List<Player> targets = selector.resolve(ctx.getSource());
                             for (Player target : targets) {
                                 createJumpscare(target);
-                                if (targets.size() == 1) {
-                                    ctx.getSource().getSender().sendMessage(
-                                            Component.text("Successfully created jumpscare for " +
-                                                            "player \"")
-                                                    .append(Component.text(target.getName()))
-                                                    .append(Component.text("\""))
-                                    );
-                                } else {
-                                    ctx.getSource().getSender().sendMessage(
-                                            Component.text("Successfully created jumpscare for "
-                                                    + targets.size()
-                                                    + " players")
-                                    );
-                                }
+                            }
+                            if (targets.size() == 1) {
+                                ctx.getSource().getSender().sendMessage(
+                                        Component.text("Successfully created jumpscare for " +
+                                                        "player \"")
+                                                .append(Component.text(
+                                                        targets.getFirst().getName())
+                                                )
+                                                .append(Component.text("\""))
+                                );
+                            } else {
+                                ctx.getSource().getSender().sendMessage(
+                                        Component.text("Successfully created jumpscare for "
+                                                + targets.size()
+                                                + " players")
+                                );
                             }
                             return 1;
                         })
