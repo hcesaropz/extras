@@ -15,44 +15,46 @@ import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
 import static io.papermc.paper.command.brigadier.Commands.argument;
 
 public final class CommandGetJSON implements BrigadierCommand {
-	private static final JSONComponentSerializer SERIALIZER = JSONComponentSerializer.json();
+    private static final JSONComponentSerializer SERIALIZER = JSONComponentSerializer.json();
 
-	@Override
-	public String getLabel() {
-		return "getjson";
-	}
+    @Override
+    public String getLabel() {
+        return "getjson";
+    }
 
-	@Override
-	public String getDescription() {
-		return "Gets the JSON of a deserialized legacy component";
-	}
+    @Override
+    public String getDescription() {
+        return "Gets the JSON of a deserialized legacy component";
+    }
 
-	@Override
-	public List<String> getAliases() {
-		return List.of("gj");
-	}
+    @Override
+    public List<String> getAliases() {
+        return List.of("gj");
+    }
 
-	@Override
-	public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
-		builder
-				.requires(src -> src.getSender().hasPermission("extras.getjson"))
-				.then(argument("message", greedyString())
-						.executes(ctx -> {
-							Component createdComponent = LegacyComponentSerializer
-									.legacyAmpersand()
-									.deserialize(StringArgumentType.getString(ctx, "message"));
+    @Override
+    public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder
+                .requires(src -> src.getSender().hasPermission("extras.getjson"))
+                .then(argument("message", greedyString())
+                        .executes(ctx -> {
+                            Component createdComponent = LegacyComponentSerializer
+                                    .legacyAmpersand()
+                                    .deserialize(StringArgumentType.getString(ctx, "message"));
 
-							// TODO: potential ramifications of using JSONComponentSerializer over GsonComponentSerializer?
-							String asJson = SERIALIZER.serialize(createdComponent);
+                            // TODO: potential ramifications of using JSONComponentSerializer
+							//  over GsonComponentSerializer?
+                            String asJson = SERIALIZER.serialize(createdComponent);
 
-							Component feedback = Component.empty()
-									.append(Component.text("Your component as JSON (click to copy): "))
-									.append(Component.text(asJson, NamedTextColor.GREEN))
-									.clickEvent(ClickEvent.copyToClipboard(asJson));
+                            Component feedback = Component.empty()
+                                    .append(Component.text("Your component as JSON (click to " +
+											"copy): "))
+                                    .append(Component.text(asJson, NamedTextColor.GREEN))
+                                    .clickEvent(ClickEvent.copyToClipboard(asJson));
 
-							ctx.getSource().getSender().sendMessage(feedback);
-							return 1;
-						})
-				);
-	}
+                            ctx.getSource().getSender().sendMessage(feedback);
+                            return 1;
+                        })
+                );
+    }
 }

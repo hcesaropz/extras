@@ -12,51 +12,51 @@ import java.util.List;
 
 public final class CommandDestroyEntities implements BrigadierCommand {
 
-	@Override
-	public String getLabel() {
-		return "destroyentities";
-	}
+    @Override
+    public String getLabel() {
+        return "destroyentities";
+    }
 
-	@Override
-	public String getDescription() {
-		return "Destroys all entities in every world";
-	}
+    @Override
+    public String getDescription() {
+        return "Destroys all entities in every world";
+    }
 
-	@Override
-	public List<String> getAliases() {
-		return List.of("de");
-	}
+    @Override
+    public List<String> getAliases() {
+        return List.of("de");
+    }
 
-	@Override
-	public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
-		builder
-				.requires(src -> src.getSender().hasPermission("extras.destroyentities"))
-				.executes(ctx -> {
-					int entityCount = 0;
-					int worldCount = 0;
+    @Override
+    public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder
+                .requires(src -> src.getSender().hasPermission("extras.destroyentities"))
+                .executes(ctx -> {
+                    int entityCount = 0;
+                    int worldCount = 0;
 
-					for (World world : Bukkit.getWorlds()) {
-						for (Entity entity : world.getEntities()) {
-							if (!EntityType.PLAYER.equals(entity.getType())) {
-								try {
-									entity.remove();
-									entityCount++;
-								} catch (Exception _) {
-									// Broken entity
-								}
-							}
-						}
-						worldCount++;
-					}
+                    for (World world : Bukkit.getWorlds()) {
+                        for (Entity entity : world.getEntities()) {
+                            if (!EntityType.PLAYER.equals(entity.getType())) {
+                                try {
+                                    entity.remove();
+                                    entityCount++;
+                                } catch (Exception _) {
+                                    // Broken entity
+                                }
+                            }
+                        }
+                        worldCount++;
+                    }
 
-					ctx.getSource().getSender().sendMessage(
-							Component.text("Successfully destroyed ")
-									.append(Component.text(entityCount))
-									.append(Component.text(" entities in "))
-									.append(Component.text(worldCount))
-									.append(Component.text(" worlds"))
-					);
-					return 1;
-				});
-	}
+                    ctx.getSource().getSender().sendMessage(
+                            Component.text("Successfully destroyed ")
+                                    .append(Component.text(entityCount))
+                                    .append(Component.text(" entities in "))
+                                    .append(Component.text(worldCount))
+                                    .append(Component.text(" worlds"))
+                    );
+                    return 1;
+                });
+    }
 }

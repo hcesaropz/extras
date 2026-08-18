@@ -8,29 +8,30 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import pw.kaboom.extras.util.Utility;
 
 public final class CommandSpawn implements BrigadierCommand {
-	@Override
-	public String getLabel() {
-		return "spawn";
-	}
+    @Override
+    public String getLabel() {
+        return "spawn";
+    }
 
-	@Override
-	public String getDescription() {
-		return "Teleports you to spawn";
-	}
+    @Override
+    public String getDescription() {
+        return "Teleports you to spawn";
+    }
 
-	@Override
-	public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
-		builder
-				.requires(src ->
-						src.getSender().hasPermission("extras.spawn") && src.getSender() instanceof Player
-				)
-				.executes(ctx -> {
-					if (!(ctx.getSource().getSender() instanceof final Player player)) {
-						throw new IllegalStateException("This command must be called by a player");
-					}
-					Utility.teleportToSpawn(player, PlayerTeleportEvent.TeleportCause.COMMAND);
-					player.sendMessage(Component.text("Successfully moved to spawn"));
-					return 1;
-				});
-	}
+    @Override
+    public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder
+                .requires(src ->
+                        src.getSender().hasPermission("extras.spawn")
+                                && src.getSender() instanceof Player
+                )
+                .executes(ctx -> {
+                    if (!(ctx.getSource().getSender() instanceof Player player)) {
+                        throw new IllegalStateException("This command must be called by a player");
+                    }
+                    Utility.teleportToSpawn(player, PlayerTeleportEvent.TeleportCause.COMMAND);
+                    player.sendMessage(Component.text("Successfully moved to spawn"));
+                    return 1;
+                });
+    }
 }

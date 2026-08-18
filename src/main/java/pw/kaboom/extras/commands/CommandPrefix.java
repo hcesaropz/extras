@@ -62,7 +62,7 @@ public final class CommandPrefix implements BrigadierCommand {
                             } catch (IOException e) {
                                 player.sendMessage(
                                         Component.text("Something went wrong while saving the " +
-												"prefix. " +
+                                                "prefix. " +
                                                 "Please check console."));
                                 log.error("Exception while saving prefix", e);
                                 return 0;
@@ -80,14 +80,14 @@ public final class CommandPrefix implements BrigadierCommand {
                             }
                             try {
                                 final Component prefix = PlayerPrefix.setPrefix(player,
-										legacyPrefix);
+                                        legacyPrefix);
                                 player.sendMessage(Component.text("You now have the tag: ")
                                         .append(prefix));
                                 return 1;
                             } catch (IOException e) {
                                 player.sendMessage(
                                         Component.text("Something went wrong while saving the " +
-												"prefix. " +
+                                                "prefix. " +
                                                 "Please check console."));
                                 log.error("Exception while saving prefix", e);
                                 return 0;

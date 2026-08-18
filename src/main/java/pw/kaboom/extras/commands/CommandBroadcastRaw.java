@@ -12,33 +12,40 @@ import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
 import static io.papermc.paper.command.brigadier.Commands.argument;
 
 public final class CommandBroadcastRaw implements BrigadierCommand {
-	private static final LegacyComponentSerializer SERIALIZER = LegacyComponentSerializer.legacyAmpersand();
+    private static final LegacyComponentSerializer SERIALIZER =
+            LegacyComponentSerializer.legacyAmpersand();
 
 
-	@Override
-	public String getLabel() {
-		return "broadcastraw";
-	}
+    @Override
+    public String getLabel() {
+        return "broadcastraw";
+    }
 
-	@Override
-	public String getDescription() {
-		return "Broadcasts raw text to the server";
-	}
+    @Override
+    public String getDescription() {
+        return "Broadcasts raw text to the server";
+    }
 
-	@Override
-	public List<String> getAliases() {
-		return List.of("bcraw", "tellraw");
-	}
+    @Override
+    public List<String> getAliases() {
+        return List.of("bcraw", "tellraw");
+    }
 
-	@Override
-	public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
-		builder
-				.requires(src -> src.getSender().hasPermission("extras.broadcastraw"))
-				.then(argument("message", greedyString())
-						.executes(ctx -> {
-							Bukkit.broadcast(SERIALIZER.deserialize(StringArgumentType.getString(ctx, "message")));
-							return 1;
-						})
-				);
-	}
+    @Override
+    public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder
+                .requires(src ->
+                        src.getSender().hasPermission("extras.broadcastraw")
+                )
+                .then(argument("message", greedyString())
+                        .executes(ctx -> {
+                            Bukkit.broadcast(
+                                    SERIALIZER.deserialize(
+                                            StringArgumentType.getString(ctx, "message")
+                                    )
+                            );
+                            return 1;
+                        })
+                );
+    }
 }

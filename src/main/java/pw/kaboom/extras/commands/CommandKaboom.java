@@ -54,13 +54,13 @@ public final class CommandKaboom implements BrigadierCommand {
                         for (int i = 0; i < explosionCount; i++) {
                             final double posX =
                                     location.getX() + ThreadLocalRandom.current().nextInt(-15
-                                    , 15);
+                                            , 15);
                             final double posY =
                                     location.getY() + ThreadLocalRandom.current().nextInt(-6,
-                                    6);
+                                            6);
                             final double posZ =
                                     location.getZ() + ThreadLocalRandom.current().nextInt(-15
-                                    , 15);
+                                            , 15);
 
                             final Location explodeLocation = new Location(world, posX, posY, posZ);
                             final int power2 = 4;

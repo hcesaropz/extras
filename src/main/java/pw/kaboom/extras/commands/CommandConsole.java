@@ -10,29 +10,29 @@ import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
 import static io.papermc.paper.command.brigadier.Commands.argument;
 
 public final class CommandConsole implements BrigadierCommand {
-	@Override
-	public String getLabel() {
-		return "console";
-	}
+    @Override
+    public String getLabel() {
+        return "console";
+    }
 
-	@Override
-	public String getDescription() {
-		return "Broadcasts a message as the console";
-	}
+    @Override
+    public String getDescription() {
+        return "Broadcasts a message as the console";
+    }
 
-	@Override
-	public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
-		builder
-				.requires(src -> src.getSender().hasPermission("extras.console"))
-				// TODO: what even is the point of this command???
-				.then(argument("message", greedyString()).executes(ctx -> {
-					Bukkit.dispatchCommand(
-							Bukkit.getConsoleSender(),
-							"minecraft:say " + Utility.translateLegacyColors(
-									StringArgumentType.getString(ctx, "message")
-							)
-					);
-					return 1;
-				}));
-	}
+    @Override
+    public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder
+                .requires(src -> src.getSender().hasPermission("extras.console"))
+                // TODO: what even is the point of this command???
+                .then(argument("message", greedyString()).executes(ctx -> {
+                    Bukkit.dispatchCommand(
+                            Bukkit.getConsoleSender(),
+                            "minecraft:say " + Utility.translateLegacyColors(
+                                    StringArgumentType.getString(ctx, "message")
+                            )
+                    );
+                    return 1;
+                }));
+    }
 }

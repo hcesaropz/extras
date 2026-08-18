@@ -53,17 +53,17 @@ public final class CommandUsername implements BrigadierCommand {
                                 throw EX_NOT_PLAYER.create();
                             }
 
-                            final String nameColor =
+                            String nameColor =
                                     Utility.translateLegacyColors(
                                             StringArgumentType.getString(
                                                     ctx,
                                                     "username"
                                             )
                                     );
-                            final String name = nameColor.substring(0, Math.min(16,
+                            String name = nameColor.substring(0, Math.min(16,
                                     nameColor.length()));
-                            final long millis = lastUsedMillis.getOrDefault(player, 0L);
-                            final long millisDifference = System.currentTimeMillis() - millis;
+                            long millis = lastUsedMillis.getOrDefault(player, 0L);
+                            long millisDifference = System.currentTimeMillis() - millis;
 
                             if (name.equals(player.getName())) {
                                 player.sendMessage(Component
@@ -81,7 +81,7 @@ public final class CommandUsername implements BrigadierCommand {
                             }
 
                             // Preserve UUIDs, as changing them breaks clients
-                            final PlayerProfile newProfile =
+                            PlayerProfile newProfile =
                                     Bukkit.createProfileExact(player.getUniqueId(), name);
 
                             player.setPlayerProfile(newProfile);

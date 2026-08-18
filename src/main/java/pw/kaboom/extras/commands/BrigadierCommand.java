@@ -6,8 +6,13 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import java.util.List;
 
 public interface BrigadierCommand {
-	String getLabel();
-	String getDescription();
-	default List<String> getAliases() { return List.of(); }
-	void build(LiteralArgumentBuilder<CommandSourceStack> builder);
+    String getLabel();
+
+    String getDescription();
+
+    default List<String> getAliases() {
+        return List.of();
+    }
+
+    void build(LiteralArgumentBuilder<CommandSourceStack> builder);
 }
