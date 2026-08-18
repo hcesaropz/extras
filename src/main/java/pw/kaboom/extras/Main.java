@@ -1,5 +1,9 @@
 package pw.kaboom.extras;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.registry.keys.BlockTypeKeys;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
@@ -7,6 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.Messenger;
+import pw.kaboom.extras.commands.BrigadierCommand;
 import pw.kaboom.extras.commands.*;
 import pw.kaboom.extras.modules.block.BlockCheck;
 import pw.kaboom.extras.modules.block.BlockPhysics;
@@ -21,6 +26,7 @@ import pw.kaboom.extras.modules.server.ServerTabComplete;
 import pw.kaboom.extras.util.FlatLayers;
 
 import java.io.File;
+import java.util.List;
 
 public final class Main extends JavaPlugin {
     public static Main PLUGIN;
@@ -46,27 +52,39 @@ public final class Main extends JavaPlugin {
         prefixConfig = YamlConfiguration.loadConfiguration(prefixConfigFile);
 
         /* Commands */
-        this.getCommand("broadcastrainbow").setExecutor(new CommandBroadcastRainbow());
-        this.getCommand("broadcastminimessage").setExecutor(new CommandBroadcastMM());
-        this.getCommand("broadcastvanilla").setExecutor(new CommandBroadcastVanilla());
-        this.getCommand("clearchat").setExecutor(new CommandClearChat());
-        this.getCommand("console").setExecutor(new CommandConsole());
-        this.getCommand("destroyentities").setExecutor(new CommandDestroyEntities());
-        this.getCommand("enchantall").setExecutor(new CommandEnchantAll());
-        this.getCommand("getjson").setExecutor(new CommandGetJSON());
-        this.getCommand("getjsonmm").setExecutor(new CommandGetJSONMM());
-        this.getCommand("jumpscare").setExecutor(new CommandJumpscare());
-        this.getCommand("kaboom").setExecutor(new CommandKaboom());
-        this.getCommand("ping").setExecutor(new CommandPing());
-        this.getCommand("prefix").setExecutor(new CommandPrefix());
-        this.getCommand("pumpkin").setExecutor(new CommandPumpkin());
-        this.getCommand("serverinfo").setExecutor(new CommandServerInfo());
-        this.getCommand("skin").setExecutor(new CommandSkin());
-        this.getCommand("spawn").setExecutor(new CommandSpawn());
-        this.getCommand("spidey").setExecutor(new CommandSpidey());
-        this.getCommand("tellraw").setExecutor(new CommandTellraw());
-        this.getCommand("username").setExecutor(new CommandUsername());
-	    
+        this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS,event->{
+            final Commands registrar = event.registrar();
+	        List<BrigadierCommand> commands = List.of(
+                    new CommandBroadcastMiniMessage(),
+                    new CommandBroadcastRainbow(),
+                    new CommandBroadcastVanilla(),
+                    new CommandClearChat(),
+                    new CommandConsole(),
+                    new CommandDestroyEntities(),
+                    new CommandEnchantAll(),
+                    new CommandGetJSON(),
+                    new CommandGetJSONMM(),
+                    new CommandJumpscare(),
+                    new CommandKaboom(),
+                    new CommandPing(),
+                    new CommandPrefix(),
+                    new CommandPumpkin(),
+                    new CommandServerInfo(),
+                    new CommandSkin(),
+                    new CommandSpawn(),
+                    new CommandSpidey(),
+                    new CommandUsername()
+            );
+            for (BrigadierCommand command : commands) {
+                LiteralArgumentBuilder<CommandSourceStack> builder
+                        = Commands.literal(command.getLabel());
+                command.build(builder);
+                registrar.register(
+                        builder.build(),command.getDescription(),command.getAliases()
+                );
+            }
+        });
+
         /* Block-related modules */
         BlockPhysics.init(this);
 

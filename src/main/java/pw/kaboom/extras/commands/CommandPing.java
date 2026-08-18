@@ -1,66 +1,83 @@
 package pw.kaboom.extras.commands;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.MessageComponentSerializer;
+import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
-import org.jspecify.annotations.NonNull;
 
-public final class CommandPing implements CommandExecutor {
+import java.util.List;
 
-    public boolean onCommand(final @NonNull CommandSender sender,
-                             final @NonNull Command command,
-                             final @NonNull String label,
-                             final String[] args) {
-        Player target;
+import static io.papermc.paper.command.brigadier.Commands.argument;
+import static io.papermc.paper.command.brigadier.argument.ArgumentTypes.player;
 
-        if (args.length == 0) {
-            target = (Player) sender;
-        } else {
-            target = Bukkit.getPlayer(args[0]);
-        }
+public final class CommandPing implements BrigadierCommand {
+    private static final SimpleCommandExceptionType EX_NOT_PLAYER =
+            new SimpleCommandExceptionType(MessageComponentSerializer.message().serialize(
+                    Component.text("This command must be called by a player")));
 
-        if (target == null) {
-            sender.sendMessage(Component
-                    .text("Player \"" + args[0] + "\" not found"));
-            return true;
-        }
+    @Override
+    public String getLabel() {
+        return "ping";
+    }
 
-        final int ping = target.getPing();
-        final int d = (int) Math.floor((float) ping / 100);
-        NamedTextColor highlighting = NamedTextColor.WHITE;
+    @Override
+    public String getDescription() {
+        return "Gets your ping";
+    }
 
-        switch (d) {
-            case 0:
-                highlighting = NamedTextColor.GREEN;
-                break;
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                highlighting = NamedTextColor.YELLOW;
-                break;
-            case 5:
-                highlighting = NamedTextColor.RED;
-                break;
-            default:
-                if (d > 5) {
-                    highlighting = NamedTextColor.DARK_RED;
-                }
-                break;
-        }
+    @Override
+    public List<String> getAliases() {
+        return List.of("delay", "ms");
+    }
 
-        Component namePrefix = args.length == 0
-            ? Component.text("Your")
-            : Component.text(target.getName()).append(Component.text("'s"));
+    @Override
+    public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder
+                .requires(src -> src.getSender().hasPermission("extras.ping"))
+                .executes(ctx -> {
+                    if (!(ctx.getSource() instanceof Player player)) {
+                        throw EX_NOT_PLAYER.create();
+                    }
+                    int ping = player.getPing();
+                    ctx.getSource().getSender().sendMessage(
+                            Component.text(player.getName())
+                                    .append(Component.text("Your ping is "))
+                                    .append(Component.text(ping, getColor(ping)))
+                                    .append(Component.text(" ms."))
+                    );
+                    return 1;
+                })
+                .then(argument("player", player())
+                        .executes(ctx -> {
+                            PlayerSelectorArgumentResolver resolver = ctx.getArgument(
+                                    "player",
+                                    PlayerSelectorArgumentResolver.class
+                            );
+                            Player player = resolver.resolve(ctx.getSource()).getFirst();
+                            int ping = player.getPing();
+                            ctx.getSource().getSender().sendMessage(
+                                    Component.text(player.getName())
+                                            .append(Component.text("'s ping is "))
+                                            .append(Component.text(ping + "ms.",
+                                                    getColor(ping)))
+                            );
+                            return 1;
+                        })
+                );
+    }
 
-        sender.sendMessage(namePrefix
-                .append(Component.text(" ping is "))
-                .append(Component.text(ping, highlighting))
-                .append(Component.text("ms.", highlighting)));
-        return true;
+    private TextColor getColor(int ping) {
+        int d = ping / 100;
+        return switch (d) {
+            case 0 -> NamedTextColor.GREEN;
+            case 1, 2, 3, 4 -> NamedTextColor.YELLOW;
+            case 5 -> NamedTextColor.RED;
+            default -> NamedTextColor.DARK_RED;
+        };
     }
 }
