@@ -1,57 +1,62 @@
 package pw.kaboom.extras.commands;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
-public final class CommandPumpkin implements CommandExecutor {
-    private void placePumpkin(final Player player) {
-        player.getInventory().setHelmet(new ItemStack(Material.CARVED_PUMPKIN));
-    }
+import java.util.List;
 
-    public boolean onCommand(final @NonNull CommandSender sender,
-                             final @NonNull Command command,
-                             final @NonNull String label,
-                             final String[] args) {
-        if (args.length == 0) {
-            sender.sendMessage(Component
-                    .text("Usage: /" + label + " <player>",
-                            NamedTextColor.RED));
-            return true;
-        }
+import static io.papermc.paper.command.brigadier.Commands.argument;
+import static io.papermc.paper.command.brigadier.argument.ArgumentTypes.players;
 
-        if (args[0].equals("*") || args[0].equals("**")) {
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                placePumpkin(onlinePlayer);
-            }
-            sender.sendMessage(Component.text("Everyone is now a pumpkin"));
-            return true;
-        }
+public final class CommandPumpkin implements BrigadierCommand {
 
-        final Player target = Bukkit.getPlayer(args[0]);
+	@Override
+	public String getLabel() {
+		return "";
+	}
 
-        if (target == null) {
-            sender.sendMessage(
-                Component.text("Player \"")
-                    .append(Component.text(args[0]))
-                    .append(Component.text("\" not found"))
-            );
-            return true;
-        }
+	@Override
+	public String getDescription() {
+		return "";
+	}
 
-        placePumpkin(target);
-        sender.sendMessage(
-            Component.text("Player \"")
-                .append(Component.text(target.getName()))
-                .append(Component.text("\" is now a pumpkin"))
-        );
-        return true;
-    }
+	@Override
+	public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
+		builder
+				.requires(src -> src.getSender().hasPermission("extras.pumpkin"))
+				.then(argument("players", players())
+						.executes(ctx -> {
+							PlayerSelectorArgumentResolver selector = ctx.getArgument(
+									"players",
+									PlayerSelectorArgumentResolver.class
+							);
+							List<Player> targets = selector.resolve(ctx.getSource());
+							for (Player target : targets) {
+								placePumpkin(target);
+								if (targets.size() == 1) {
+									ctx.getSource().getSender().sendMessage(
+											Component.text("\"")
+													.append(Component.text(target.getName()))
+													.append(Component.text("\" is now a pumpkin"))
+									);
+								} else {
+									ctx.getSource().getSender().sendMessage(
+											// TODO: probably needs better message but lazy rn
+											Component.text("Multiple players are now pumpkins")
+									);
+								}
+							}
+							return 1;
+						})
+				);
+	}
+
+	private void placePumpkin(final Player player) {
+		player.getInventory().setHelmet(new ItemStack(Material.CARVED_PUMPKIN));
+	}
 }

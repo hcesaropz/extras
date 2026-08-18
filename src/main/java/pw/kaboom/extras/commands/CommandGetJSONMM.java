@@ -1,39 +1,57 @@
 package pw.kaboom.extras.commands;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.jspecify.annotations.NonNull;
 
-public final class CommandGetJSONMM implements CommandExecutor {
-    public boolean onCommand(final @NonNull CommandSender sender,
-                             final @NonNull Command command,
-                             final @NonNull String label,
-                             final String[] args) {
-        if (args.length == 0) {
-            sender.sendMessage(Component
-                    .text("Usage: /" + label + " <message ..>", NamedTextColor.RED));
-            return true;
-        }
+import java.util.List;
 
-        final String message = String.join(" ", args);
-        Component createdComponent = MiniMessage.miniMessage()
-                .deserialize(message);
+import static io.papermc.paper.command.brigadier.Commands.argument;
 
-        String asJson = GsonComponentSerializer.gson()
-                .serialize(createdComponent);
+public final class CommandGetJSONMM implements BrigadierCommand {
+    @Override
+    public String getLabel() {
+        return "getjsonmm";
+    }
 
-        Component feedback = Component.empty()
-                .append(Component.text("Your component as JSON (click to copy): "))
-                .append(Component.text(asJson, NamedTextColor.GREEN))
-                .clickEvent(ClickEvent.copyToClipboard(asJson));
+    @Override
+    public String getDescription() {
+        return "Gets the JSON of a deserialized MiniMessage component";
+    }
 
-        sender.sendMessage(feedback);
-        return true;
+    @Override
+    public List<String> getAliases() {
+        return List.of("jmm");
+    }
+
+    @Override
+    public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder
+                .requires(src ->
+                        src.getSender().hasPermission("extras.getjsonmm")
+                )
+                .then(argument("message", StringArgumentType.greedyString())
+                        .executes(ctx -> {
+                            Component createdComponent = MiniMessage.miniMessage().deserialize(
+                                    StringArgumentType.getString(ctx, "message")
+                            );
+
+                            String asJson = GsonComponentSerializer.gson()
+                                    .serialize(createdComponent);
+
+                            Component feedback = Component.empty()
+                                    .append(Component.text("Your component as JSON (click" +
+                                            " to copy): "))
+                                    .append(Component.text(asJson, NamedTextColor.GREEN))
+                                    .clickEvent(ClickEvent.copyToClipboard(asJson));
+
+                            ctx.getSource().getSender().sendMessage(feedback);
+                            return 1;
+                        }));
     }
 }

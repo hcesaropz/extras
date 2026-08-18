@@ -1,46 +1,62 @@
 package pw.kaboom.extras.commands;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.jspecify.annotations.NonNull;
 
-public final class CommandDestroyEntities implements CommandExecutor {
-    @Override
-    public boolean onCommand(final @NonNull CommandSender sender,
-                             final @NonNull Command command,
-                             final @NonNull String label,
-                             final String[] args) {
-        int entityCount = 0;
-        int worldCount = 0;
+import java.util.List;
 
-        for (World world : Bukkit.getWorlds()) {
-            for (Entity entity : world.getEntities()) {
-                if (!EntityType.PLAYER.equals(entity.getType())) {
-                    try {
-                        entity.remove();
-                        entityCount++;
-                    } catch (Exception ignored) {
-                        // Broken entity
-                        continue;
-                    }
-                }
-            }
-            worldCount++;
-        }
+public final class CommandDestroyEntities implements BrigadierCommand {
 
-        sender.sendMessage(
-            Component.text("Successfully destroyed ")
-                .append(Component.text(entityCount))
-                .append(Component.text(" entities in "))
-                .append(Component.text(worldCount))
-                .append(Component.text(" worlds"))
-        );
-        return true;
-    }
+	@Override
+	public String getLabel() {
+		return "destroyentities";
+	}
+
+	@Override
+	public String getDescription() {
+		return "Destroys all entities in every world";
+	}
+
+	@Override
+	public List<String> getAliases() {
+		return List.of("de");
+	}
+
+	@Override
+	public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
+		builder
+				.requires(src -> src.getSender().hasPermission("extras.destroyentities"))
+				.executes(ctx -> {
+					int entityCount = 0;
+					int worldCount = 0;
+
+					for (World world : Bukkit.getWorlds()) {
+						for (Entity entity : world.getEntities()) {
+							if (!EntityType.PLAYER.equals(entity.getType())) {
+								try {
+									entity.remove();
+									entityCount++;
+								} catch (Exception _) {
+									// Broken entity
+								}
+							}
+						}
+						worldCount++;
+					}
+
+					ctx.getSource().getSender().sendMessage(
+							Component.text("Successfully destroyed ")
+									.append(Component.text(entityCount))
+									.append(Component.text(" entities in "))
+									.append(Component.text(worldCount))
+									.append(Component.text(" worlds"))
+					);
+					return 1;
+				});
+	}
 }
