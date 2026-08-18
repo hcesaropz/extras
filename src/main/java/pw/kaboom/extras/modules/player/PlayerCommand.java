@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import pw.kaboom.extras.modules.server.ServerCommand;
 
 public final class PlayerCommand implements Listener {
-    private static final HashMap<UUID, Long> commandMillisList = new HashMap<   >();
+    private static final HashMap<UUID, Long> commandMillisList = new HashMap<>();
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
