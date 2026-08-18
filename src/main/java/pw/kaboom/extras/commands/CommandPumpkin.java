@@ -18,12 +18,12 @@ public final class CommandPumpkin implements BrigadierCommand {
 
     @Override
     public String getLabel() {
-        return "";
+        return "pumpkin";
     }
 
     @Override
     public String getDescription() {
-        return "";
+        return "Places a pumpkin on a player's head";
     }
 
     @Override
