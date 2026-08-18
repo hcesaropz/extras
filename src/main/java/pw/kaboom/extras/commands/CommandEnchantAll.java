@@ -1,7 +1,9 @@
 package pw.kaboom.extras.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.MessageComponentSerializer;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import net.kyori.adventure.text.Component;
@@ -12,6 +14,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public final class CommandEnchantAll implements BrigadierCommand {
+    private static final SimpleCommandExceptionType EX_NOT_PLAYER =
+            new SimpleCommandExceptionType(MessageComponentSerializer.message().serialize(
+                    Component.text("This command must be called by a player")));
+    private static final SimpleCommandExceptionType EX_NO_ITEM =
+            new SimpleCommandExceptionType(MessageComponentSerializer.message().serialize(
+                    Component.text("Please hold an item in your hand to enchant it")));
+
     @Override
     public String getLabel() {
         return "enchantall";
@@ -32,16 +41,13 @@ public final class CommandEnchantAll implements BrigadierCommand {
                 .executes(ctx -> {
                     if (!(ctx.getSource().getSender() instanceof Player player)) {
                         // should be impossible, see above
-                        throw new IllegalStateException("Command has to be run by a player");
+                        throw EX_NOT_PLAYER.create();
                     }
 
                     final ItemStack item = player.getInventory().getItemInMainHand();
 
                     if (Material.AIR.equals(item.getType())) {
-                        // TODO: perhaps should be red to signify error? idk
-                        player.sendMessage(Component
-                                .text("Please hold an item in your hand to enchant it"));
-                        return 0;
+                        throw EX_NO_ITEM.create();
                     }
 
                     final Registry<Enchantment> registry = RegistryAccess.registryAccess()
@@ -49,8 +55,7 @@ public final class CommandEnchantAll implements BrigadierCommand {
                     for (Enchantment enchantment : registry) {
                         item.addUnsafeEnchantment(enchantment, Short.MAX_VALUE);
                     }
-                    player.sendMessage(Component
-                            .text("I killed Martin."));
+                    player.sendMessage(Component.text("I killed Martin."));
                     return 1;
                 });
     }

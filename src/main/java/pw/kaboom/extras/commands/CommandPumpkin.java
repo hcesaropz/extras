@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 import static io.papermc.paper.command.brigadier.Commands.argument;
+import static io.papermc.paper.command.brigadier.argument.ArgumentTypes.player;
 import static io.papermc.paper.command.brigadier.argument.ArgumentTypes.players;
 
 public final class CommandPumpkin implements BrigadierCommand {
@@ -46,8 +47,8 @@ public final class CommandPumpkin implements BrigadierCommand {
                                     );
                                 } else {
                                     ctx.getSource().getSender().sendMessage(
-                                            // TODO: probably needs better message but lazy rn
-                                            Component.text("Multiple players are now pumpkins")
+                                            Component.text(targets.size()
+                                                    + " players are now pumpkins")
                                     );
                                 }
                             }

@@ -24,7 +24,6 @@ public final class CommandConsole implements BrigadierCommand {
     public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
         builder
                 .requires(src -> src.getSender().hasPermission("extras.console"))
-                // TODO: what even is the point of this command???
                 .then(argument("message", greedyString()).executes(ctx -> {
                     Bukkit.dispatchCommand(
                             Bukkit.getConsoleSender(),

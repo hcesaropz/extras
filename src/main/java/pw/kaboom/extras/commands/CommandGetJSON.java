@@ -42,8 +42,6 @@ public final class CommandGetJSON implements BrigadierCommand {
                                     .legacyAmpersand()
                                     .deserialize(StringArgumentType.getString(ctx, "message"));
 
-                            // TODO: potential ramifications of using JSONComponentSerializer
-							//  over GsonComponentSerializer?
                             String asJson = SERIALIZER.serialize(createdComponent);
 
                             Component feedback = Component.empty()

@@ -48,9 +48,9 @@ public final class CommandJumpscare implements BrigadierCommand {
                                     );
                                 } else {
                                     ctx.getSource().getSender().sendMessage(
-                                            // TODO: probably needs better message but lazy rn
-                                            Component.text("Successfully created jumpscare for " +
-                                                    "multiple players")
+                                            Component.text("Successfully created jumpscare for "
+                                                    + targets.size()
+                                                    + " players")
                                     );
                                 }
                             }
